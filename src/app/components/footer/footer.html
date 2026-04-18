@@ -1,0 +1,33 @@
+<!-- footer.component.html -->
+<div class="footer-container flex items-center justify-center gap-15 px-4 py-2">
+
+  <!-- LEFT: Network Status -->
+  <div class="relative group flex items-center gap-2 cursor-pointer">
+    <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+
+    <!-- Tooltip -->
+    <div class="absolute bottom-6 left-0 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+      Network status: Online
+    </div>
+  </div>
+
+  <!-- CENTER: Time -->
+  <div class="text-sm font-mono">
+    {{ currentTime }}
+  </div>
+
+  <!-- RIGHT: Controls -->
+  <div class="flex items-center gap-4">
+
+    <!-- Theme Toggle -->
+    <button (click)="toggleTheme()" class="text-lg" type="button">
+      <i [class]="isDarkMode ? 'fa-solid fa-sun' : 'fa-regular fa-moon'"></i>
+    </button>
+
+    <!-- Language -->
+    <button (click)="openLanguage()" class="text-lg" type="button">
+      <i class="fa-solid fa-globe"></i>
+    </button>
+
+  </div>
+</div>

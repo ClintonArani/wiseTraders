@@ -1,0 +1,16 @@
+/* Make sure dark mode styles are properly defined */
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+/* Optional: Add transition for smooth theme switching */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Style for the time display */
+.font-mono {
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}

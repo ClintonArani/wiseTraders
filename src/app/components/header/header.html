@@ -1,0 +1,26 @@
+<!-- header.component.html -->
+<header class="flex justify-between items-center px-4 py-0.5 h-12 bg-gray-100 shadow-sm sticky top-0 z-10">
+    <div class="left flex items-center gap-3.5">
+        <div class="logo flex items-center">
+            <img src="assets/logo.png" alt="wiseTraders" class="h-18 w-18" onerror="this.src='https://placehold.co/64x64/0078D4/white?text=WT'">
+            <p class="text-gray-500 font-bold">WiseTraders</p>
+        </div>
+        <i class="fas fa-share-nodes text-[#0078D4] text-2xl transition-all duration-300 ease-in-out hover:text-[#005a9e] hover:scale-110 cursor-pointer"></i>
+        <button
+            class="bg-gradient-to-r from-blue-500 to-green-600 text-white px-4 py-1 rounded-lg hover:from-blue-600 hover:to-green-700 transition duration-300 shadow-sm">
+            Deposit/Withdraw
+        </button>
+    </div>
+
+    <div class="right flex items-center gap-2.5">
+        <button
+            class="bg-gradient-to-r from-blue-500 to-blue-700 text-white px-4 py-1 rounded-lg hover:from-blue-600 hover:to-blue-800 transition duration-300 shadow-sm">
+            Login
+        </button>
+
+        <button
+            class="bg-gradient-to-r from-red-500 to-pink-600 text-white px-4 py-1 rounded-lg hover:from-red-600 hover:to-pink-700 transition duration-300 shadow-sm">
+            Sign Up
+        </button>
+    </div>
+</header>
