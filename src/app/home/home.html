@@ -1,237 +1,337 @@
 <!-- home.component.html -->
 <app-header></app-header>
 <div class="bg-gray-300 h-130 flex">
-    <div class="w-full px-4">
-        <div class="bg-white shadow-md hover:shadow-xl transition-all duration-300 mt-2 h-125">
-            <div class="flex w-full">
-                <!-- Left (75%) -->
-                <div #scrollContainer class="w-3/4 bg-blue-700 text-white p-2 overflow-x-auto scrollbar-hide">
-                    <ul class="flex space-x-2 w-max">
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-gauge-high"></i>
-                            <span>Dashboard</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-robot"></i>
-                            <span>Bot Builder</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <span>Analysis Tool</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-arrow-trend-up"></i>
-                            <span>Trader</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-robot"></i>
-                            <span>Free Bots</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Charts</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-layer-group"></i>
-                            <span>Batch Trader</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-magnifying-glass-chart"></i>
-                            <span>Market Analyzer</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-wave-square"></i>
-                            <span>Frequency Analysis</span>
-                        </li>
-                        <li (click)="scrollToItem(item)" #item
-                            class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap">
-                            <i class="fa-solid fa-hashtag"></i>
-                            <span>Digit Analysis</span>
-                        </li>
-                    </ul>
-                </div>
-    
-                <!-- Right (25%) - Run Bar -->
-                <div class="w-1/4 flex items-center">
-                    <div class="flex items-center w-full h-full bg-gray-200 rounded overflow-hidden">
-                        <!-- Run Button -->
-                        <button (click)="openOverlay()"
-                            class="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 h-full transition">
-                            <i class="fa-solid fa-play"></i>
-                            <span>Run</span>
-                        </button>
-    
-                        <!-- Status -->
-                        <div class="flex-1 text-center text-sm font-medium text-gray-700">
-                            Bot is not running
-                        </div>
-    
-                        <!-- Slider / Progress -->
-                        <div class="w-32 px-2">
-                            <input type="range" class="w-full accent-gray-500">
-                        </div>
-                    </div>
-                </div>
+  <div class="w-full px-4">
+    <div class="bg-white shadow-md hover:shadow-xl transition-all duration-300 mt-2 h-125">
+      
+      <!-- Show Bot Builder when active -->
+      <div *ngIf="showBotBuilder" class="h-full">
+        <app-bot-builder></app-bot-builder>
+      </div>
+      
+      <!-- Show normal content when bot builder is not active -->
+      <div *ngIf="!showBotBuilder" class="flex flex-col items-center justify-center px-4">
+        <!-- Top Navigation Tabs -->
+        <div class="flex w-full">
+          <!-- Left (75%) -->
+          <div
+            #scrollContainer
+            class="w-3/4 bg-blue-700 text-white p-2 overflow-x-auto scrollbar-hide"
+          >
+            <ul class="flex space-x-2 w-max">
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dashboard</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-robot"></i>
+                <span>Bot Builder</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Analysis Tool</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-arrow-trend-up"></i>
+                <span>Trader</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-robot"></i>
+                <span>Free Bots</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Charts</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Batch Trader</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                <span>Market Analyzer</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-wave-square"></i>
+                <span>Frequency Analysis</span>
+              </li>
+              <li
+                (click)="scrollToItem(item)"
+                #item
+                class="flex items-center gap-2 px-4 py-2 rounded hover:bg-blue-600 cursor-pointer whitespace-nowrap"
+              >
+                <i class="fa-solid fa-hashtag"></i>
+                <span>Digit Analysis</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Right (25%) - Run Bar -->
+          <div class="w-1/4 flex items-center">
+            <div class="flex items-center w-full h-full bg-gray-200 rounded overflow-hidden">
+              <!-- Run Button -->
+              <button
+                (click)="openOverlay()"
+                class="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 h-full transition"
+              >
+                <i class="fa-solid fa-play"></i>
+                <span>Run</span>
+              </button>
+
+              <!-- Status -->
+              <div class="flex-1 text-center text-sm font-medium text-gray-700">
+                Bot is not running
+              </div>
+
+              <!-- Slider / Progress -->
+              <div class="w-32 px-2">
+                <input type="range" class="w-full accent-gray-500" />
+              </div>
             </div>
-    
-            <div class="flex justify-center">
-                <div class="upper mt-20">
-                    <p>Import a bot from your computer or Google Drive, build it from scratch, or start with a quick
-                        strategy.</p>
-                    <div class="cards flex justify-center items-center gap-3 mt-8">
-                        <div class="card flex flex-col gap-2 cursor-pointer">
-                            <div class="bg-gray-100 p-4 rounded-md">
-                                <i class="fas fa-desktop text-5xl"></i>
-                            </div>
-                            <p>My Computer</p>
-                        </div>
-                        <div class="card flex flex-col gap-2 items-center cursor-pointer">
-                            <div class="bg-gray-100 p-4 rounded-md flex items-center justify-center">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
-                                    class="w-12 h-12 object-contain">
-                            </div>
-                            <p>Google Drive</p>
-                        </div>
-                        <div class="card flex flex-col gap-2 cursor-pointer">
-                            <div class="bg-gray-100 p-4 rounded-md">
-                                <i class="fas fa-robot text-5xl"></i>
-                            </div>
-                            <p>Bot builder</p>
-                        </div>
-                        <div class="card flex flex-col gap-2 cursor-pointer">
-                            <div class="bg-gray-100 p-4 rounded-md">
-                                <i class="fas fa-bolt text-5xl"></i>
-                            </div>
-                            <p>Quick strategy</p>
-                        </div>
-                    </div>
-    
-                </div>
-                <div class="bottom"></div>
-            </div>
+          </div>
         </div>
-    </div>
-    
-    <!-- Login Overlay Modal -->
-    <div *ngIf="isOverlayVisible" class="fixed inset-0 z-50 bg-gray-900/50 flex items-center justify-center px-4"
-        (click)="onBackdropClick($event)">
-        <div class="bg-white rounded-lg shadow-xl w-96 max-w-full mx-4 overflow-hidden">
-            <div class="px-6 py-4 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-800">Please Login</h3>
-                <button (click)="closeOverlay()" class="text-gray-500 hover:text-gray-700 transition">
-                    <i class="fa-solid fa-times"></i>
-                </button>
+        
+        <!-- Main Content -->
+        <div class="w-full max-w-6xl">
+          <!-- TOP SECTION -->
+          <div class="upper mt-20 text-center">
+            <p>
+              Import a bot from your computer or Google Drive, build it from scratch, or start with
+              a quick strategy.
+            </p>
+
+            <div class="cards flex flex-wrap justify-center items-center gap-4 mt-8">
+              <div class="card flex flex-col gap-2 cursor-pointer items-center" (click)="openBotBuilder('computer')">
+                <div class="bg-gray-100 p-4 rounded-md">
+                  <i class="fas fa-desktop text-5xl"></i>
+                </div>
+                <p>My Computer</p>
+              </div>
+
+              <div class="card flex flex-col gap-2 items-center cursor-pointer" (click)="openBotBuilder('drive')">
+                <div class="bg-gray-100 p-4 rounded-md flex items-center justify-center">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/d/da/Google_Drive_logo.png"
+                    class="w-12 h-12 object-contain"
+                  />
+                </div>
+                <p>Google Drive</p>
+              </div>
+
+              <div class="card flex flex-col gap-2 cursor-pointer items-center" (click)="openBotBuilder('builder')">
+                <div class="bg-gray-100 p-4 rounded-md">
+                  <i class="fas fa-robot text-5xl"></i>
+                </div>
+                <p>Bot builder</p>
+              </div>
+
+              <div class="card flex flex-col gap-2 cursor-pointer items-center" (click)="openBotBuilder('quick')">
+                <div class="bg-gray-100 p-4 rounded-md">
+                  <i class="fas fa-bolt text-5xl"></i>
+                </div>
+                <p>Quick strategy</p>
+              </div>
             </div>
-            <div class="px-6 py-4">
-                <p class="text-gray-700">You need to login to run the bot.</p>
+          </div>
+
+          <!-- BOTTOM SECTION -->
+          <div class="bottom mt-6 w-[70%] mx-auto">
+            <h2 class="text-xl font-semibold mb-4">Your bot:</h2>
+
+            <div class="w-full bg-white overflow-hidden">
+              <div class="w-full overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-600 table-fixed">
+                  <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                    <tr>
+                      <th class="px-4 py-3 w-1/4">Bot Name</th>
+                      <th class="px-4 py-3 w-1/4">Last Modified</th>
+                      <th class="px-4 py-3 w-1/4">Status</th>
+                      <th class="px-4 py-3 w-1/4 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y">
+                    <tr class="hover:bg-gray-50 transition">
+                      <td class="px-4 py-4 font-medium text-gray-800 truncate">ChatBot Alpha</td>
+                      <td class="px-4 py-4">Apr 20, 2026</td>
+                      <td class="px-4 py-4">
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+                          Active
+                        </span>
+                      </td>
+                      <td class="px-4 py-4 text-center">
+                        <div class="flex justify-center gap-4">
+                          <div class="relative group cursor-pointer">
+                            <i class="fas fa-folder-open text-blue-500 hover:text-blue-700"></i>
+                            <span class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                              Open
+                            </span>
+                          </div>
+                          <div class="relative group cursor-pointer">
+                            <i class="fas fa-save text-green-500 hover:text-green-700"></i>
+                            <span class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                              Save
+                            </span>
+                          </div>
+                          <div class="relative group cursor-pointer">
+                            <i class="fas fa-trash text-red-500 hover:text-red-700"></i>
+                            <span class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                              Delete
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div class="px-6 py-3 flex justify-end gap-3">
-                <button (click)="closeOverlay()"
-                    class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition">
-                    Cancel
-                </button>
-                <button
-                    class="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition">
-                    Ok
-                </button>
-            </div>
+          </div>
         </div>
+      </div>
     </div>
-    
-    <!-- ================= AI SCANNER FLOATING BUTTON ================= -->
-    <div class="ai-scanner-container" (click)="openAiScanner()">
-    
-      <!-- Pulsing rings -->
+  </div>
+
+  <!-- Login Overlay Modal -->
+  <div
+    *ngIf="isOverlayVisible"
+    class="fixed inset-0 z-50 bg-gray-900/50 flex items-center justify-center px-4"
+    (click)="onBackdropClick($event)"
+  >
+    <div class="bg-white rounded-lg shadow-xl w-96 max-w-full mx-4 overflow-hidden">
+      <div class="px-6 py-4 flex justify-between items-center">
+        <h3 class="text-lg font-semibold text-gray-800">Please Login</h3>
+        <button (click)="closeOverlay()" class="text-gray-500 hover:text-gray-700 transition">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="px-6 py-4">
+        <p class="text-gray-700">You need to login to run the bot.</p>
+      </div>
+      <div class="px-6 py-3 flex justify-end gap-3">
+        <button
+          (click)="closeOverlay()"
+          class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+        >
+          Cancel
+        </button>
+        <button class="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-md transition">
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= AI SCANNER FLOATING BUTTON ================= -->
+  <div class="ai-scanner-container" (click)="openAiScanner()">
+    <!-- Pulsing rings -->
     <div class="pulse-ring delay-0"></div>
     <div class="pulse-ring delay-1"></div>
     <div class="pulse-ring delay-2"></div>
     <div class="pulse-ring delay-3"></div>
-    
-      <!-- Main AI Button -->
-      <div class="ai-button">
-        <span class="ai-text">AI</span>
-    
-        <!-- Rotating arm -->
-        <div class="rotating-arm"></div>
-      </div>
-    
-      <!-- Tooltip -->
-      <div class="ai-tooltip">
-        <strong>AI Scanner</strong>
-        <p>Click to analyze</p>
-      </div>
-    
+
+    <!-- Main AI Button -->
+    <div class="ai-button">
+      <span class="ai-text">AI</span>
+      <!-- Rotating arm -->
+      <div class="rotating-arm"></div>
     </div>
-    
-    
-    <!-- ================= AI SCANNER MODAL ================= -->
-    <div *ngIf="isAiScannerVisible"
-         class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
-         (click)="closeAiScanner($event)">
-    
-      <div class="bg-white w-[500px] max-w-full rounded-xl shadow-xl p-6 relative">
-    
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-lg font-semibold">Entry Scanner</h2>
-          <button (click)="isAiScannerVisible = false">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-    
-        <!-- Description -->
-        <div class="bg-gray-100 text-sm p-3 rounded mb-4 text-gray-600">
-          Deep scanner evaluates all synthetic index random markets, then finds
-          the best entry point digit and strategy profile from historical tick data.
-        </div>
-    
-        <!-- Input -->
-        <label class="text-sm font-medium">NUMBER OF TICKS TO SCAN</label>
-        <input type="number"
-               [(ngModel)]="ticks"
-               class="w-full border rounded p-2 mt-1 mb-3" />
-    
-        <!-- Progress -->
-        <div class="text-sm text-gray-500 mb-1">
-          Scanning market... <span class="float-right">0/0</span>
-        </div>
-    
-        <div class="w-full bg-gray-200 h-2 rounded mb-3">
-          <div class="bg-blue-500 h-2 rounded w-0"></div>
-        </div>
-    
-        <!-- Status -->
-        <div class="bg-gray-100 p-2 rounded text-sm text-gray-500 mb-4">
-          Not scanned yet
-        </div>
-    
-        <!-- Buttons -->
-        <button class="w-full py-2 rounded text-white mb-3 scan-btn">
-          Deep Scan for Best Market
-        </button>
-    
-        <button class="w-full py-2 rounded border text-blue-500">
-          Load Deep Scanner Bot
-        </button>
-    
-      </div>
+
+    <!-- Tooltip -->
+    <div class="ai-tooltip">
+      <strong>AI Scanner</strong>
+      <p>Click to analyze</p>
     </div>
+  </div>
+
+  <!-- ================= AI SCANNER MODAL ================= -->
+  <div
+    *ngIf="isAiScannerVisible"
+    class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
+    (click)="closeAiScanner($event)"
+  >
+    <div class="bg-white w-[500px] max-w-full rounded-xl shadow-xl p-6 relative">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Entry Scanner</h2>
+        <button (click)="isAiScannerVisible = false">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Description -->
+      <div class="bg-gray-100 text-sm p-3 rounded mb-4 text-gray-600">
+        Deep scanner evaluates all synthetic index random markets, then finds the best entry point
+        digit and strategy profile from historical tick data.
+      </div>
+
+      <!-- Input -->
+      <label class="text-sm font-medium">NUMBER OF TICKS TO SCAN</label>
+      <input type="number" [(ngModel)]="ticks" class="w-full border rounded p-2 mt-1 mb-3" />
+
+      <!-- Progress -->
+      <div class="text-sm text-gray-500 mb-1">
+        Scanning market... <span class="float-right">0/0</span>
+      </div>
+
+      <div class="w-full bg-gray-200 h-2 rounded mb-3">
+        <div class="bg-blue-500 h-2 rounded w-0"></div>
+      </div>
+
+      <!-- Status -->
+      <div class="bg-gray-100 p-2 rounded text-sm text-gray-500 mb-4">Not scanned yet</div>
+
+      <!-- Buttons -->
+      <button class="w-full py-2 rounded text-white mb-3 scan-btn">
+        Deep Scan for Best Market
+      </button>
+
+      <button class="w-full py-2 rounded border text-blue-500">Load Deep Scanner Bot</button>
+    </div>
+  </div>
 </div>
 
 <!-- LANGUAGE MODAL -->
-<div *ngIf="isLanguageModal"
-     class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-     (click)="closeLanguageModal($event)">
-
+<div
+  *ngIf="isLanguageModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeLanguageModal($event)"
+>
   <div class="bg-white rounded-2xl shadow-xl w-96 max-w-[90%] overflow-hidden">
     <div class="p-6 pb-4 border-b border-gray-100">
       <h3 class="text-xl font-semibold text-gray-900">Select Language</h3>
@@ -239,25 +339,30 @@
 
     <div class="max-h-[60vh] overflow-y-auto">
       <ul class="divide-y divide-gray-100">
-        <li *ngFor="let language of languages" 
-            class="px-6 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
-            [class.bg-blue-50]="currentLanguage === language.name"
-            (click)="selectLanguage(language.name)">
+        <li
+          *ngFor="let language of languages"
+          class="px-6 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+          [class.bg-blue-50]="currentLanguage === language.name"
+          (click)="selectLanguage(language.name)"
+        >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <!-- Emoji flag -->
               <span class="text-2xl">{{ language.flagEmoji }}</span>
               <span class="text-gray-700">{{ language.name }}</span>
             </div>
-            <svg *ngIf="currentLanguage === language.name" 
-                 class="w-5 h-5 text-blue-600" 
-                 fill="none" 
-                 stroke="currentColor" 
-                 viewBox="0 0 24 24">
-              <path stroke-linecap="round" 
-                    stroke-linejoin="round" 
-                    stroke-width="2" 
-                    d="M5 13l4 4L19 7"></path>
+            <svg
+              *ngIf="currentLanguage === language.name"
+              class="w-5 h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
           </div>
         </li>

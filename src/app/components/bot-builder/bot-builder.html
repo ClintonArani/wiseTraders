@@ -1,0 +1,884 @@
+<div class="bot-builder-container">
+  <div class="flex h-full bg-gray-100">
+    <!-- Left Panel - Blocks Menu -->
+    <div class="w-[20%] bg-white border-r border-gray-200 flex flex-col">
+      <!-- HEADER (CLICKABLE) -->
+      <div
+        class="p-4 border-b border-gray-200 flex items-center justify-between cursor-pointer bg-gray-100"
+        (click)="toggleBlocksMenu()"
+      >
+        <h2 class="text-lg font-semibold text-gray-800">Blocks menu</h2>
+
+        <!-- WORKING ICON -->
+        <span class="text-xs">
+          {{ isBlocksMenuOpen ? '▲' : '▼' }}
+        </span>
+      </div>
+
+      <!-- COLLAPSIBLE AREA -->
+      <div
+        class="flex-1 overflow-y-auto transition-all duration-300"
+        [style.maxHeight]="isBlocksMenuOpen ? '100vh' : '0px'"
+      >
+        <!-- SEARCH -->
+        <div class="p-4 border-b border-gray-200">
+          <div class="mt-2 relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">🔍</span>
+            <input
+              type="text"
+              placeholder="Search"
+              class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="p-4">
+          <!-- Trade parameters -->
+          <div class="mb-6">
+            <div class="flex justify-between cursor-pointer" (click)="toggleSection('tradeParams')">
+              <h3 class="font-medium text-gray-800">Trade parameters</h3>
+              <span class="text-xs">{{ sections.tradeParams ? '▶' : '▼' }}</span>
+            </div>
+
+            <div *ngIf="!sections.tradeParams" class="mt-3 space-y-3 pl-2">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-600">Market:</span>
+                <select class="border rounded px-2 py-1 text-sm">
+                  <option>Derived</option>
+                  <option>Forex</option>
+                  <option>Stocks</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Purchase -->
+          <div class="mb-6">
+            <div
+              class="flex justify-between cursor-pointer"
+              (click)="toggleSection('purchaseConditions')"
+            >
+              <h3 class="font-medium text-gray-800">Purchase conditions</h3>
+              <span class="text-xs">{{ sections.purchaseConditions ? '▶' : '▼' }}</span>
+            </div>
+
+            <div *ngIf="!sections.purchaseConditions" class="mt-3 pl-2">
+              <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                <span class="text-blue-700 text-sm">Add condition</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sell -->
+          <div class="mb-6">
+            <div
+              class="flex justify-between cursor-pointer"
+              (click)="toggleSection('sellConditions')"
+            >
+              <h3 class="font-medium text-gray-800">Sell conditions (optional)</h3>
+              <span class="text-xs">{{ sections.sellConditions ? '▶' : '▼' }}</span>
+            </div>
+
+            <div *ngIf="!sections.sellConditions" class="mt-3 space-y-2 pl-2 text-sm text-gray-600">
+              <div>if Sell is available and</div>
+              <div>Current Tick Value</div>
+              <div>Tick Count</div>
+            </div>
+          </div>
+
+          <!-- Restart -->
+          <div class="mb-6">
+            <div
+              class="flex justify-between cursor-pointer"
+              (click)="toggleSection('restartConditions')"
+            >
+              <h3 class="font-medium text-gray-800">Restart trading conditions</h3>
+              <span class="text-xs">{{ sections.restartConditions ? '▶' : '▼' }}</span>
+            </div>
+
+            <div *ngIf="!sections.restartConditions" class="mt-3 pl-2 text-sm">Trade again</div>
+          </div>
+
+          <!-- Utility -->
+          <div class="mb-6">
+            <div class="flex justify-between cursor-pointer" (click)="toggleUtilitySection()">
+              <h3 class="font-medium text-gray-800">Utility</h3>
+              <span class="text-xs">{{ sections.utility ? '▶' : '▼' }}</span>
+            </div>
+
+            <div *ngIf="!sections.utility" class="mt-3 space-y-2 pl-2">
+              <div
+                *ngFor="let option of utilityOptions"
+                (click)="openUtilityPopup(option)"
+                class="flex justify-between p-2 rounded hover:bg-gray-100 cursor-pointer"
+              >
+                <span class="text-sm text-gray-700">{{ option.name }}</span>
+                <span class="text-xs">›</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom functions -->
+          <div class="mb-6">
+            <div
+              class="flex justify-between cursor-pointer"
+              (click)="toggleSection('customFunctions')"
+            >
+              <h3 class="font-medium text-gray-800">Custom functions</h3>
+              <span class="text-xs">{{ sections.customFunctions ? '▶' : '▼' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle Panel - Canvas Area (40% when right panel open, 70% when collapsed) -->
+    <div
+      class="flex-1 flex flex-col"
+      [class.w-[70%]]="!rightPanelCollapsed"
+      [class.w-[calc(100%-30%)]]="rightPanelCollapsed"
+    >
+      <!-- Top Toolbar -->
+      <div class="bg-white border-b border-gray-200 p-2 flex items-center justify-between">
+        <div class="flex items-center gap-1">
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="undo()"
+            >
+              <i class="fa-solid fa-arrow-rotate-left"></i>
+            </div>
+            <div class="tooltip">Undo (Ctrl+Z)</div>
+          </div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="redo()"
+            >
+              <i class="fa-solid fa-arrow-rotate-right"></i>
+            </div>
+            <div class="tooltip">Redo (Ctrl+Y)</div>
+          </div>
+
+          <div class="w-px h-6 bg-gray-300 mx-1"></div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="zoomIn()"
+            >
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </div>
+            <div class="tooltip">Zoom In (Ctrl++)</div>
+          </div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="zoomOut()"
+            >
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </div>
+            <div class="tooltip">Zoom Out (Ctrl+-)</div>
+          </div>
+
+          <div class="w-px h-6 bg-gray-300 mx-1"></div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="openResetModal()"
+            >
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </div>
+            <div class="tooltip">Reset</div>
+          </div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="openImportModal()"
+            >
+              <i class="fa-solid fa-upload"></i>
+            </div>
+            <div class="tooltip">Import</div>
+          </div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="save()"
+            >
+              <i class="fa-regular fa-floppy-disk"></i>
+            </div>
+            <div class="tooltip">Save (Ctrl+S)</div>
+          </div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="openChartsModal()"
+            >
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="tooltip">Charts</div>
+          </div>
+
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer transition-colors"
+              (click)="openTradingViewModal()"
+            >
+              <i class="fa-solid fa-chart-simple"></i>
+            </div>
+            <div class="tooltip">TradingView Chart</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-1.5 rounded flex items-center gap-2 transition"
+          >
+            <i class="fa-solid fa-play"></i>
+            <span>Run</span>
+          </button>
+          <div class="text-sm text-gray-600">Bot is not running</div>
+        </div>
+      </div>
+
+      <div class="flex-1 deriv-bg overflow-y-auto p-4">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <!-- LEFT COLUMN -->
+          <div class="lg:col-span-2 space-y-3 min-w-0">
+            <!-- 1. Trade Parameters -->
+            <div class="deriv-panel">
+              <div class="deriv-header">1. Trade parameters</div>
+
+              <div class="deriv-body space-y-3">
+                <!-- Market Row -->
+                <div class="row">
+                  <span class="label">Market:</span>
+
+                  <select [(ngModel)]="marketType" class="select">
+                    <option>Derived ✓</option>
+                    <option>Forex</option>
+                    <option>Stock Indices</option>
+                    <option>Cryptocurrencies</option>
+                    <option>Commodities</option>
+                  </select>
+
+                  <select [(ngModel)]="marketCategory" class="select">
+                    <option>Continuous Indices</option>
+                    <option>Forex Basket</option>
+                    <option>Daily Reset Indices</option>
+                    <option>Crash/Boom Indices</option>
+                    <option>Commodities Basket</option>
+                    <option>Jump Indices</option>
+                    <option>Range Break Indices</option>
+                    <option>Step Indices</option>
+                  </select>
+
+                  <select [(ngModel)]="marketAsset" class="select">
+                    <option>Volatility 10 (1s) Index</option>
+                    <option>Volatility 10 Index</option>
+                    <option>Volatility 15 (1s) Index</option>
+                    <option>Volatility 25 (1s) Index</option>
+                    <option>Volatility 25 Index</option>
+                    <option>Volatility 30 (1s) Index</option>
+                    <option>Volatility 50 (1s) Index</option>
+                    <option>Volatility 50 Index</option>
+                    <option>Volatility 75 (1s) Index</option>
+                    <option>Volatility 75 Index</option>
+                  </select>
+                </div>
+
+                <!-- Trade Type -->
+                <div class="row">
+                  <span class="label">Trade Type:</span>
+
+                  <select [(ngModel)]="tradeType" class="select">
+                    <option>Up/Down</option>
+                    <option>Touch/No Touch</option>
+                    <option>In/Out</option>
+                    <option>Asians</option>
+                    <option>Digits</option>
+                    <option>Reset Call/Reset Put</option>
+                    <option>High/Low Ticks</option>
+                    <option>Only Ups/Only Downs</option>
+                    <option>Multipliers</option>
+                    <option>Accumulators</option>
+                  </select>
+
+                  <select [(ngModel)]="tradeDirection" class="select">
+                    <option>Rise/Fall</option>
+                    <option>Rise Equals/Fall Equals</option>
+                    <option>Higher/Lower</option>
+                  </select>
+                </div>
+
+                <!-- Contract -->
+                <div class="row">
+                  <span class="label">Contract Type:</span>
+                  <select class="select small">
+                    <option>Both</option>
+                  </select>
+                </div>
+
+                <!-- Candle -->
+                <div class="row">
+                  <span class="label">Default Candle Interval:</span>
+
+                  <select [(ngModel)]="candleInterval" class="select">
+                    <option>1 minute</option>
+                    <option>2 minutes</option>
+                    <option>3 minutes</option>
+                    <option>5 minutes</option>
+                    <option>10 minutes</option>
+                    <option>15 minutes</option>
+                    <option>30 minutes</option>
+                    <option>1 hour</option>
+                    <option>2 hours</option>
+                    <option>4 hours</option>
+                  </select>
+                </div>
+
+                <!-- Restart -->
+                <div class="checkbox-row">
+                  <input type="checkbox" />
+                  <span>Restart buy/sell on error (disable for better performance)</span>
+                </div>
+
+                <div class="checkbox-row">
+                  <input type="checkbox" checked />
+                  <span>Restart last trade on error (bot ignores unsuccessful trade)</span>
+                </div>
+
+                <!-- Run Once -->
+                <div class="mini-header">Run once at start:</div>
+
+                <!-- Trade Options -->
+                <div class="trade-box">
+                  <div class="mini-header">Trade options:</div>
+
+                  <div class="row">
+                    <span class="label">Duration:</span>
+
+                    <select [(ngModel)]="durationType" class="select small">
+                      <option>Ticks</option>
+                      <option>Seconds</option>
+                      <option>Minutes</option>
+                      <option>Hours</option>
+                      <option>Days</option>
+                    </select>
+
+                    <input type="number" [(ngModel)]="durationValue" class="input small" />
+
+                    <span class="label">Stake:</span>
+
+                    <span class="text-xs">AUD</span>
+
+                    <input type="number" [(ngModel)]="stake" class="input small" />
+
+                    <span class="text-xs muted">(min: 0.5 - max: 69000)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Purchase -->
+            <div class="deriv-panel">
+              <div class="deriv-header">2. Purchase conditions</div>
+
+              <div class="deriv-body">
+                <div class="row">
+                  <span class="label">Purchase:</span>
+
+                  <select [(ngModel)]="purchaseType" class="select small">
+                    <option>Rise</option>
+                    <option>Fall</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="space-y-3 min-w-0">
+            <div class="deriv-panel">
+              <div class="deriv-header">3. Sell conditions</div>
+              <div class="deriv-body">
+                <div class="fake-slider"></div>
+              </div>
+            </div>
+
+            <div class="deriv-panel">
+              <div class="deriv-header">4. Restart trading conditions</div>
+              <div class="deriv-body text-sm">Trade again</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel - Summary/Transactions/Journal (Collapsible - 30% width) -->
+    <div
+      class="bg-white border-l border-gray-200 flex flex-col transition-all duration-300"
+      [class.w-[30%]]="!rightPanelCollapsed"
+      [class.w-0]="rightPanelCollapsed"
+    >
+      <div *ngIf="!rightPanelCollapsed" class="flex flex-col h-full">
+        <!-- Header with collapse button -->
+        <div
+          class="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50"
+        >
+          <div class="flex gap-6">
+            <span
+              class="text-sm font-medium text-gray-700 cursor-pointer"
+              [class.text-blue-600]="activeTab === 'summary'"
+              (click)="setActiveTab('summary')"
+              >Summary</span
+            >
+            <span
+              class="text-sm font-medium text-gray-700 cursor-pointer"
+              [class.text-blue-600]="activeTab === 'transactions'"
+              (click)="setActiveTab('transactions')"
+              >Transactions</span
+            >
+            <span
+              class="text-sm font-medium text-gray-700 cursor-pointer"
+              [class.text-blue-600]="activeTab === 'journal'"
+              (click)="setActiveTab('journal')"
+              >Journal</span
+            >
+          </div>
+          <button
+            (click)="toggleRightPanel()"
+            class="text-gray-500 hover:text-gray-700 transition-transform"
+            [class.rotate-180]="rightPanelCollapsed"
+          >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto p-4">
+          <!-- Summary Tab -->
+          <div *ngIf="activeTab === 'summary'" class="space-y-4">
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-sm text-gray-500 mb-1">Total stake</div>
+              <div class="text-2xl font-bold">
+                {{ statistics.totalStake | number: '1.2-2' }} AUD
+              </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-sm text-gray-500 mb-1">Total payout</div>
+              <div class="text-2xl font-bold">
+                {{ statistics.totalPayout | number: '1.2-2' }} AUD
+              </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-sm text-gray-500 mb-1">No. of runs</div>
+              <div class="text-2xl font-bold">{{ statistics.runs }}</div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <div class="text-sm text-gray-500 mb-1">Total profit/loss</div>
+              <div
+                class="text-2xl font-bold"
+                [class.text-green-600]="statistics.profitLoss >= 0"
+                [class.text-red-600]="statistics.profitLoss < 0"
+              >
+                {{ statistics.profitLoss | number: '1.2-2' }} AUD
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-red-50 p-3 rounded-lg">
+                <div class="text-sm text-gray-500">Contracts lost</div>
+                <div class="text-xl font-bold text-red-600">{{ statistics.contractsLost }}</div>
+              </div>
+              <div class="bg-green-50 p-3 rounded-lg">
+                <div class="text-sm text-gray-500">Contracts won</div>
+                <div class="text-xl font-bold text-green-600">{{ statistics.contractsWon }}</div>
+              </div>
+            </div>
+            <button
+              (click)="confirmReset()"
+              class="w-full mt-2 text-red-500 text-sm hover:text-red-600 py-2 border border-red-200 rounded-lg hover:bg-red-50 transition"
+            >
+              Reset Statistics
+            </button>
+          </div>
+
+          <!-- Transactions Tab -->
+          <div *ngIf="activeTab === 'transactions'">
+            <div *ngIf="transactions.length === 0" class="text-center text-gray-500 py-12">
+              <i class="fa-solid fa-receipt text-5xl mb-3 opacity-50"></i>
+              <p>No transactions yet</p>
+              <p class="text-xs mt-1">Run the bot to see transactions</p>
+            </div>
+            <div *ngFor="let tx of transactions" class="border-b border-gray-100 py-3">
+              <!-- Transaction item -->
+            </div>
+          </div>
+
+          <!-- Journal Tab -->
+          <div *ngIf="activeTab === 'journal'">
+            <div *ngIf="journalEntries.length === 0" class="text-center text-gray-500 py-12">
+              <i class="fa-solid fa-book text-5xl mb-3 opacity-50"></i>
+              <p>No journal entries</p>
+              <p class="text-xs mt-1">Actions will appear here</p>
+            </div>
+            <div
+              *ngFor="let entry of journalEntries"
+              class="border-b border-gray-100 py-3 last:border-0"
+            >
+              <div class="flex items-start gap-3">
+                <i [class]="getJournalIcon(entry.type) + ' mt-0.5'"></i>
+                <div class="flex-1">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-medium text-sm">{{ entry.action }}</span>
+                    <span class="text-xs text-gray-400">{{
+                      entry.timestamp | date: 'HH:mm:ss'
+                    }}</span>
+                  </div>
+                  <p class="text-xs text-gray-600">{{ entry.details }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer with summary -->
+        <div class="border-t border-gray-200 p-3 bg-gray-50">
+          <div class="text-xs text-gray-500 text-center">
+            <div>Stake: {{ statistics.totalStake | number: '1.2-2' }} AUD</div>
+            <div>Payout: {{ statistics.totalPayout | number: '1.2-2' }} AUD</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsed view - vertical tab buttons -->
+      <div *ngIf="rightPanelCollapsed" class="flex flex-col items-center py-4 gap-4">
+        <button (click)="toggleRightPanel()" class="text-gray-500 hover:text-gray-700 p-2">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="flex flex-col gap-3">
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer"
+              (click)="setActiveTab('summary'); toggleRightPanel()"
+            >
+              <i class="fa-solid fa-chart-pie text-gray-600"></i>
+            </div>
+            <div class="tooltip-right">Summary</div>
+          </div>
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer"
+              (click)="setActiveTab('transactions'); toggleRightPanel()"
+            >
+              <i class="fa-solid fa-receipt text-gray-600"></i>
+            </div>
+            <div class="tooltip-right">Transactions</div>
+          </div>
+          <div class="tool-icon-group relative">
+            <div
+              class="p-2 hover:bg-gray-100 rounded cursor-pointer"
+              (click)="setActiveTab('journal'); toggleRightPanel()"
+            >
+              <i class="fa-solid fa-book text-gray-600"></i>
+            </div>
+            <div class="tooltip-right">Journal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div
+  *ngIf="showResetModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeResetModal($event)"
+>
+  <div class="bg-white rounded-lg shadow-xl w-96 max-w-full mx-4">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-lg font-semibold text-gray-800">Reset Confirmation</h3>
+    </div>
+    <div class="px-6 py-4">
+      <p class="text-gray-700">Are you sure? Any unsaved changes will be lost.</p>
+    </div>
+    <div class="px-6 py-3 flex justify-end gap-3 border-t border-gray-200">
+      <button
+        (click)="closeResetModal($event)"
+        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+      >
+        Cancel
+      </button>
+      <button
+        (click)="confirmReset()"
+        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Modal -->
+<div
+  *ngIf="showImportModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeImportModal($event)"
+>
+  <div class="bg-white rounded-lg shadow-xl w-[600px] max-w-[90%] max-h-[80vh] flex flex-col">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h3 class="text-lg font-semibold text-gray-800">Load strategy</h3>
+      <button (click)="showImportModal = false" class="text-gray-500 hover:text-gray-700">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-6">
+      <div class="mb-6">
+        <div
+          class="flex items-center justify-between cursor-pointer mb-3"
+          (click)="toggleImportSection('recent')"
+        >
+          <h4 class="font-medium text-gray-700">Recent</h4>
+          <i
+            class="fa-solid"
+            [class.fa-minus]="importSections.recent"
+            [class.fa-plus]="!importSections.recent"
+          ></i>
+        </div>
+        <div *ngIf="importSections.recent" class="space-y-2">
+          <div
+            class="flex items-center justify-between p-3 bg-gray-50 rounded cursor-pointer hover:bg-gray-100"
+            (click)="importStrategy('Untitled Bot')"
+          >
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-robot text-gray-500"></i>
+              <div>
+                <div class="font-medium">Untitled Bot</div>
+                <div class="text-xs text-gray-500">2m ago</div>
+              </div>
+            </div>
+            <button class="text-blue-500 text-sm">Load</button>
+          </div>
+          <div
+            class="flex items-center justify-between p-3 bg-gray-50 rounded cursor-pointer hover:bg-gray-100"
+            (click)="importStrategy('Martingale')"
+          >
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-robot text-gray-500"></i>
+              <div>
+                <div class="font-medium">Martingale</div>
+                <div class="text-xs text-gray-500">47m ago</div>
+              </div>
+            </div>
+            <button class="text-blue-500 text-sm">Load</button>
+          </div>
+        </div>
+      </div>
+      <div class="mb-6">
+        <div
+          class="flex items-center justify-between cursor-pointer mb-3"
+          (click)="toggleImportSection('local')"
+        >
+          <h4 class="font-medium text-gray-700">Local</h4>
+          <i
+            class="fa-solid"
+            [class.fa-minus]="importSections.local"
+            [class.fa-plus]="!importSections.local"
+          ></i>
+        </div>
+        <div
+          *ngIf="importSections.local"
+          class="p-3 bg-gray-50 rounded text-center text-gray-500 cursor-pointer"
+          (click)="importStrategy('Local Backup')"
+        >
+          <i class="fa-solid fa-folder-open text-2xl mb-1"></i>
+          <p class="text-sm">Unsaved</p>
+        </div>
+      </div>
+      <div>
+        <div
+          class="flex items-center justify-between cursor-pointer mb-3"
+          (click)="toggleImportSection('googleDrive')"
+        >
+          <h4 class="font-medium text-gray-700">Google Drive</h4>
+          <i
+            class="fa-solid"
+            [class.fa-minus]="importSections.googleDrive"
+            [class.fa-plus]="!importSections.googleDrive"
+          ></i>
+        </div>
+        <div
+          *ngIf="importSections.googleDrive"
+          class="p-3 bg-gray-50 rounded text-center text-gray-500"
+        >
+          <i class="fa-brands fa-google-drive text-2xl mb-1"></i>
+          <p class="text-sm">Connect to Google Drive</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Modal -->
+<div
+  *ngIf="showChartsModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeChartsModal($event)"
+>
+  <div class="bg-white rounded-lg shadow-xl w-[800px] max-w-[90%] h-[500px] flex flex-col">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h3 class="text-lg font-semibold text-gray-800">Charts</h3>
+      <button (click)="showChartsModal = false" class="text-gray-500 hover:text-gray-700">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+    <div class="flex-1 p-6">
+      <div
+        class="w-full h-full bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg relative cursor-crosshair"
+        (mousemove)="onChartHover($event)"
+        (mouseleave)="chartHoverData = null"
+      >
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="text-center">
+            <i class="fa-solid fa-chart-line text-6xl text-gray-400 mb-4"></i>
+            <p class="text-gray-500">Chart visualization would appear here</p>
+          </div>
+        </div>
+        <div
+          *ngIf="chartHoverData"
+          class="absolute bg-black/80 text-white text-sm rounded px-3 py-2 pointer-events-none"
+          [style.left.px]="chartHoverData.x"
+          [style.top.px]="chartHoverData.y"
+        >
+          <div>Price: {{ chartHoverData.price }}</div>
+          <div>Volume: {{ chartHoverData.volume }}</div>
+          <div>Time: {{ chartHoverData.time }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TradingView Chart Modal -->
+<div
+  *ngIf="showTradingViewModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeTradingViewModal($event)"
+>
+  <div class="bg-white rounded-lg shadow-xl w-[900px] max-w-[90%] h-[600px] flex flex-col">
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h3 class="text-lg font-semibold text-gray-800">TradingView Chart</h3>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-gray-500">deriv</span>
+        <button (click)="showTradingViewModal = false" class="text-gray-500 hover:text-gray-700">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 p-4 bg-gray-900">
+      <div class="w-full h-full bg-gray-800 rounded-lg flex items-center justify-center relative">
+        <div class="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none">
+          <div
+            *ngFor="let level of [2900, 3000, 3100, 3200, 3300, 3400]"
+            class="border-t border-gray-700 text-right"
+          >
+            <span class="text-xs text-gray-500 -mt-3 block">{{ level }}.0000</span>
+          </div>
+        </div>
+        <div class="text-center text-white z-10 bg-gray-800/80 p-6 rounded-lg">
+          <i class="fa-solid fa-chart-line text-4xl mb-3 text-blue-400"></i>
+          <p class="text-lg font-semibold">Volatility 25 Index</p>
+          <p class="text-sm text-gray-400 mb-4">24h</p>
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>Open: <span class="text-green-400">3,198.3690</span></div>
+            <div>High: <span class="text-green-400">3,204.6140</span></div>
+            <div>Low: <span class="text-red-400">3,160.2660</span></div>
+            <div>Close: <span class="text-blue-400">3,176.6730</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Utility Options Popup -->
+<div
+  *ngIf="showUtilityPopup"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeUtilityPopup($event)"
+>
+  <div
+    class="bg-white rounded-lg shadow-xl w-[500px] max-w-[90%] max-h-[80vh] flex flex-col animate-modal-slide-in"
+  >
+    <!-- Header -->
+    <div
+      class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg"
+    >
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+          <i [class]="selectedUtility?.icon + ' text-blue-600 text-xl'"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800">{{ selectedUtility?.name }}</h3>
+        </div>
+      </div>
+      <button
+        (click)="closeUtilityPopup()"
+        class="text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        <i class="fa-solid fa-times text-xl"></i>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+      <!-- Details based on selected option -->
+      <div class="mb-6">
+        <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-code text-green-500"></i>
+          Details & Examples
+        </h4>
+        <div class="bg-gray-50 p-3 rounded-lg">
+          <p class="text-sm text-gray-600 mb-3">{{ selectedUtility?.details }}</p>
+        </div>
+
+        <div class="mt-4 flex gap-3">
+          <i
+            [class]="selectedUtility.tagIcon"
+            class="text-white bg-blue-600 rounded-full text-sm p-1"
+          ></i>
+          <button class="border border-gray-300 bg-white text-black">Do something</button>
+          <i
+            [class]="selectedUtility.plusIcon"
+            class="bg-gray-800 text-white rounded-full text-sm p-1"
+          ></i>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 pt-4 border-t border-gray-200">
+        <button
+          (click)="closeUtilityPopup()"
+          class="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          <i class="fa-solid fa-check"></i>
+          <span>Got it</span>
+        </button>
+        <button
+          (click)="closeUtilityPopup()"
+          class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

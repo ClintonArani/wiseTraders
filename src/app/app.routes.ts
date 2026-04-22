@@ -7,7 +7,6 @@ import { Charts } from './pages/charts/charts';
 import { FreeBots } from './pages/free-bots/free-bots';
 import { Trader } from './pages/trader/trader';
 import { AnalysisTool } from './pages/analysis-tool/analysis-tool';
-import { BotBuilder } from './pages/bot-builder/bot-builder';
 import { Home } from './home/home';
 
 
@@ -15,7 +14,6 @@ export const routes: Routes = [
     { path: 'wiseTraders', component: Home},
     { path: '', redirectTo: '/wiseTraders', pathMatch: 'full'},
     { path: 'dashboard', component: Dashboard},
-    { path: 'bot-builder', component: BotBuilder},
     { path: 'analysis-tool', component: AnalysisTool},
     { path: 'trader', component: Trader},
     { path: 'free-bots', component: FreeBots},

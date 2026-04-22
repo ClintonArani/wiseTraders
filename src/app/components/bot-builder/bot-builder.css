@@ -1,0 +1,278 @@
+.bot-builder-container {
+  height: calc(100vh - 120px);
+  min-height: 500px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.tool-icon-group {
+  position: relative;
+}
+
+.tool-icon-group .tooltip {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+  font-family: monospace;
+}
+
+.tool-icon-group:hover .tooltip {
+  opacity: 1;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease;
+}
+
+/* Canvas zoom animation */
+.canvas-zoom {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modal animations */
+.modal-enter {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Journal entry styles */
+.journal-entry {
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Loading animation */
+.loading-spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bot-builder-container {
+    height: calc(100vh - 100px);
+  }
+  
+  .tool-icon-group .tooltip {
+    display: none;
+  }
+}
+/* Add this to your existing CSS */
+.tooltip-right {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 10px;
+  background-color: #1f2937;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.tool-icon-group:hover .tooltip-right {
+  opacity: 1;
+}
+
+.deriv-bg {
+  background: #f2f3f5;
+}
+
+/* Panel */
+.deriv-panel {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+/* Header */
+.deriv-header {
+  background: #0e4a5a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+/* Body */
+.deriv-body {
+  padding: 10px 12px;
+}
+
+/* Row */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap; /* important */
+}
+
+/* Label */
+.label {
+  font-size: 12px;
+  color: #333;
+}
+
+/* Select */
+.select {
+  background: #f7f7f7;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  min-width: 120px;
+  max-width: 100%;
+}
+
+.select.small {
+  min-width: 80px;
+}
+
+/* Input */
+.input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  width: 60px;
+}
+
+/* Checkbox */
+.checkbox-row {
+  display: flex;
+  gap: 6px;
+  font-size: 12px;
+  color: #555;
+}
+
+/* Mini header */
+.mini-header {
+  background: #0e4a5a;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Trade box */
+.trade-box {
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Slider placeholder */
+.fake-slider {
+  height: 40px;
+  background: #e0e0e0;
+  border-radius: 6px;
+}
+
+/* Muted */
+.muted {
+  color: #777;
+}
+
+/* Modal slide-in animation */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-slide-in {
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+.blocks-menu-header {
+  background: #e6e6e6;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.blocks-menu-header:hover {
+  background: #dcdcdc;
+}
